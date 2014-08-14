@@ -11,11 +11,11 @@ import (
 type any interface{}
 
 func checkMarshal(expected string, data any) (err error) {
-	var b bytes.Buffer
-	if err = Marshal(&b, data); err != nil {
+	var b []byte
+	if b, err = Marshal(data); err != nil {
 		return
 	}
-	s := b.String()
+	s := string(b)
 	if expected != s {
 		err = errors.New(fmt.Sprintf("Expected %s got %s", expected, s))
 		return

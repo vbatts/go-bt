@@ -10,6 +10,7 @@
 package bencode
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"io"
@@ -283,6 +284,9 @@ func (b *structBuilder) Key(k string) builder {
 // slice of the correct type.
 //
 func Unmarshal(r io.Reader, val interface{}) (err error) {
+	// TODO match other encoders, like encoding/json ...
+	// func Unmarshal(data []byte, v interface{}) error
+
 	// If e represents a value, the answer won't get back to the
 	// caller.  Make sure it's a pointer.
 	if reflect.TypeOf(val).Kind() != reflect.Ptr {
@@ -516,7 +520,7 @@ func isValueNil(val reflect.Value) bool {
 //   Field int
 //
 //   // Field appears in bencode as key "myName".
-//   Field int "myName"
+//   Field int `bencode:"myName"`
 //
 // Anonymous struct fields are ignored.
 //
@@ -533,8 +537,10 @@ func isValueNil(val reflect.Value) bool {
 // handle them.  Passing cyclic structures to Marshal will result in
 // an infinite recursion.
 //
-func Marshal(w io.Writer, val interface{}) error {
+func Marshal(val interface{}) ([]byte, error) {
 	// TODO match other encoders, like encoding/json ...
 	// func Marshal(v interface{}) ([]byte, error)
-	return writeValue(w, reflect.ValueOf(val))
+	buf := bytes.Buffer{}
+	err := writeValue(&buf, reflect.ValueOf(val))
+	return buf.Bytes(), err
 }
