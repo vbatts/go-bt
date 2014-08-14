@@ -228,7 +228,7 @@ func (b *structBuilder) Key(k string) builder {
 	return nobuilder
 }
 
-// Unmarshal reads and parses the bencode syntax data from r and fills in
+// Unmarshal reads and parses the bencode syntax data from data []byte and fills in
 // an arbitrary struct or slice pointed at by val.
 // It uses the reflect package to assign to fields
 // and arrays embedded in val.  Well-formed data that does not fit
@@ -283,8 +283,8 @@ func (b *structBuilder) Key(k string) builder {
 // To unmarshal a top-level bencode array, pass in a pointer to an empty
 // slice of the correct type.
 //
-func Unmarshal(r io.Reader, val interface{}) (err error) {
-	// TODO match other encoders, like encoding/json ...
+func Unmarshal(data []byte, val interface{}) (err error) {
+	// matching other encoders, like encoding/json ...
 	// func Unmarshal(data []byte, v interface{}) error
 
 	// If e represents a value, the answer won't get back to the
@@ -293,6 +293,7 @@ func Unmarshal(r io.Reader, val interface{}) (err error) {
 		err = errors.New("Attempt to unmarshal into a non-pointer")
 		return
 	}
+	r := bytes.NewReader(data)
 	err = unmarshalValue(r, reflect.Indirect(reflect.ValueOf(val)))
 	return
 }
@@ -538,8 +539,7 @@ func isValueNil(val reflect.Value) bool {
 // an infinite recursion.
 //
 func Marshal(val interface{}) ([]byte, error) {
-	// TODO match other encoders, like encoding/json ...
-	// func Marshal(v interface{}) ([]byte, error)
+	// matching other encoders, like encoding/json ...
 	buf := bytes.Buffer{}
 	err := writeValue(&buf, reflect.ValueOf(val))
 	return buf.Bytes(), err
