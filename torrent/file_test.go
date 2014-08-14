@@ -1,0 +1,34 @@
+package torrent
+
+import (
+	"github.com/vbatts/go-bt/bencode"
+	"testing"
+)
+
+func TestFileMarshal(t *testing.T) {
+	f1 := File{
+		Announce: "http://foo.bar.com:9090/announce",
+		AnnounceList: []string{"http://foo.bar.com:9091/announce",
+			"http://foo.bar.com:9092/announce",
+			"http://foo.bar.com:9093/announce",
+		},
+	}
+
+	buf, err := bencode.Marshal(f1)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	f2 := File{}
+	err = bencode.Unmarshal(buf, &f2)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if f1.Announce != f2.Announce {
+		t.Errorf("expected %q, got %q", f1.Announce, f2.Announce)
+	}
+	if len(f1.AnnounceList) != len(f2.AnnounceList) {
+		t.Errorf("expected %q, got %q", len(f1.AnnounceList), len(f2.AnnounceList))
+	}
+}

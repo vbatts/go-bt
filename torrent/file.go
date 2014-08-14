@@ -1,27 +1,36 @@
 package torrent
 
 import (
-	//"github.com/vbatts/go-bt/bencode"
 	"crypto/sha1"
 )
 
-/*
-map[string]interface {}{"announce":"http://torrent.fedoraproject.org:6969/announce", "creation date":1387244350, "info":map[string]interface {}{"files":[]interface {}{map[string]interface {}{"length":1125, "path":[]interface {}{"Fedora-20-x86_64-CHECKSUM"}}, map[string]interface {}{"length":4603248640, "path":[]interface {}{"Fedora-20-x86_64-DVD.iso"}}}, "name":"Fedora-20-x86_64-DVD", "piece length":262144, "pieces":"m\x
-*/
+// https://wiki.theory.org/BitTorrentSpecification#Metainfo_File_Structure
 type File struct {
 	// URL of a main tracker
 	Announce string `bencode:"announce"`
 
+	// List of additional trackers
+	AnnounceList []string `bencode:"announce-list"`
+
 	// Epoch of the creation of this torrent
-	CreationDate int64 `bencode:"creation date"`
+	CreationDate int64 `bencode:"creation date,omitempty"`
 
 	// Dictionary about this torrent, including files to be tracked
-	Info TorrentFileInfo `bencode:"info"`
+	Info InfoSection `bencode:"info,omitempty"`
+
+	// free-form textual comments of the author
+	Comment string `bencode:"comment,omitempty"`
+
+	// name and version of the program used to create the .torrent
+	CreatedBy string `bencode:"created by,omitempty"`
+
+	// string encoding used to generate the `pieces` and `info` fields
+	Encoding string `bencode:"encoding"`
 }
 
-type TorrentFileInfo struct {
+type InfoSection struct {
 	// suggested file/directory name where the file(s) are to be saved
-	Name string `bencode:"name"`
+	Name string `bencode:"name,omitempty"`
 
 	// hash list of joined SHA1 sums (160-bit length)
 	Pieces string `bencode:"pieces"`
@@ -30,16 +39,19 @@ type TorrentFileInfo struct {
 	PieceLength int64 `bencode:"piece length"`
 
 	// size of the file in bytes (only if this torrent is for a single file)
-	Length int64 `bencode:"length"`
+	Length int64 `bencode:"length,omitempty"`
+
+	// 32-char hexadecimal string corresponding to the MD5 sum of the file (only if this torrent is for a single file)
+	MD5 string `bencode:"md5sum,omitempty"`
 
 	// list of information about the files
 	Files []FileInfo `bencode:"files"`
 }
 
-func (tfi TorrentFileInfo) PiecesList() []string {
+func (is InfoSection) PiecesList() []string {
 	pieces := []string{}
-	for i := 0; i < (len(tfi.Pieces) / sha1.Size); i++ {
-		pieces = append(pieces, tfi.Pieces[i*sha1.Size:(i+1)*sha1.Size])
+	for i := 0; i < (len(is.Pieces) / sha1.Size); i++ {
+		pieces = append(pieces, is.Pieces[i*sha1.Size:(i+1)*sha1.Size])
 	}
 	return pieces
 }
@@ -50,6 +62,9 @@ type FileInfo struct {
 
 	// list of strings corresponding to subdirectory names, the last of which is the actual file name
 	Path []string `bencode:"path"`
+
+	// 32-char hexadecimal string corresponding to the MD5 sum of the file (only if this torrent is for a single file)
+	MD5 string `bencode:"md5sum,omitempty"`
 }
 
 type torrentError struct {
@@ -104,7 +119,7 @@ func DecocdeTorrentData(data interface{}) (*File, error) {
 	return &File{
 		Announce:     announce,
 		CreationDate: creationDate,
-		Info: TorrentFileInfo{
+		Info: InfoSection{
 			Name:        infoName,
 			Length:      infoLength,
 			Pieces:      pieces,
