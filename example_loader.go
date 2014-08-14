@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/vbatts/go-bt/bencode"
 	"github.com/vbatts/go-bt/torrent"
+	"io/ioutil"
 	"os"
 )
 
@@ -27,19 +28,20 @@ func main() {
 			continue
 		}
 
-		data, err := bencode.Decode(fh)
+    buf, err := ioutil.ReadAll(fh)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "%s\n", err)
-			fh.Close()
 			continue
 		}
 		fh.Close()
 
-		tf, err := torrent.DecocdeTorrentData(data)
+    tf := torrent.File{}
+		err = bencode.Unmarshal(buf, &tf)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "%s\n", err)
 			continue
 		}
+
 		fmt.Printf("Loaded: %s (%d files)\n", tf.Info.Name, len(tf.Info.Files))
 
 		if len(*flOutput) > 0 {
@@ -48,7 +50,11 @@ func main() {
 				fmt.Fprintf(os.Stderr, "%s\n", err)
 				continue
 			}
-			err = bencode.Marshal(fhOutput, *tf)
+			buf, err = bencode.Marshal(tf)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "%s\n", err)
+			}
+      _, err = fhOutput.Write(buf)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "%s\n", err)
 			}
