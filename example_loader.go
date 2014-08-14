@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/vbatts/go-bt/bencode"
-	"github.com/vbatts/go-bt/torrent"
 	"flag"
 	"fmt"
+	"github.com/vbatts/go-bt/bencode"
+	"github.com/vbatts/go-bt/torrent"
 	"os"
 )
 

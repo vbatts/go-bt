@@ -206,19 +206,19 @@ type SVPair struct {
 
 func TestDecode(t *testing.T) {
 	tests := []SVPair{
-		SVPair{"i0e", int64(0)},
-		SVPair{"i0e", 0},
-		SVPair{"i100e", 100},
-		SVPair{"i-100e", -100},
-		SVPair{"1:a", "a"},
-		SVPair{"2:a\"", "a\""},
-		SVPair{"11:0123456789a", "0123456789a"},
-		SVPair{"le", []int64{}},
-		SVPair{"li1ei2ee", []int{1, 2}},
-		SVPair{"l3:abc3:defe", []string{"abc", "def"}},
-		SVPair{"li42e3:abce", []any{42, "abc"}},
-		SVPair{"de", map[string]any{}},
-		SVPair{"d3:cati1e3:dogi2ee", map[string]any{"cat": 1, "dog": 2}},
+		{"i0e", int64(0)},
+		{"i0e", 0},
+		{"i100e", 100},
+		{"i-100e", -100},
+		{"1:a", "a"},
+		{"2:a\"", "a\""},
+		{"11:0123456789a", "0123456789a"},
+		{"le", []int64{}},
+		{"li1ei2ee", []int{1, 2}},
+		{"l3:abc3:defe", []string{"abc", "def"}},
+		{"li42e3:abce", []any{42, "abc"}},
+		{"de", map[string]any{}},
+		{"d3:cati1e3:dogi2ee", map[string]any{"cat": 1, "dog": 2}},
 	}
 	for _, sv := range tests {
 		if err := check(sv.s, sv.v); err != nil {
@@ -244,19 +244,19 @@ func TestUnmarshal(t *testing.T) {
 	nestedDictionary := structNested{"aa", "q", "ping", innerDict}
 
 	tests := []SVPair{
-		SVPair{"i100e", 100},
-		SVPair{"i-100e", -100},
-		SVPair{"1:a", "a"},
-		SVPair{"2:a\"", "a\""},
-		SVPair{"11:0123456789a", "0123456789a"},
-		SVPair{"le", []int64{}},
-		SVPair{"li1ei2ee", []int{1, 2}},
-		SVPair{"l3:abc3:defe", []string{"abc", "def"}},
-		SVPair{"li42e3:abce", []any{42, "abc"}},
-		SVPair{"de", map[string]any{}},
-		SVPair{"d3:cati1e3:dogi2ee", map[string]any{"cat": 1, "dog": 2}},
-		SVPair{"d1:ai10e1:b3:foo11:sea monster3:bare", structA{10, "foo", "bar"}},
-		SVPair{"d1:ad2:id20:abcdefghij0123456789e1:q4:ping1:t2:aa1:y1:qe", nestedDictionary},
+		{"i100e", 100},
+		{"i-100e", -100},
+		{"1:a", "a"},
+		{"2:a\"", "a\""},
+		{"11:0123456789a", "0123456789a"},
+		{"le", []int64{}},
+		{"li1ei2ee", []int{1, 2}},
+		{"l3:abc3:defe", []string{"abc", "def"}},
+		{"li42e3:abce", []any{42, "abc"}},
+		{"de", map[string]any{}},
+		{"d3:cati1e3:dogi2ee", map[string]any{"cat": 1, "dog": 2}},
+		{"d1:ai10e1:b3:foo11:sea monster3:bare", structA{10, "foo", "bar"}},
+		{"d1:ad2:id20:abcdefghij0123456789e1:q4:ping1:t2:aa1:y1:qe", nestedDictionary},
 	}
 	for _, sv := range tests {
 		if err := checkUnmarshal(sv.s, sv.v); err != nil {

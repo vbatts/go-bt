@@ -10,30 +10,30 @@ map[string]interface {}{"announce":"http://torrent.fedoraproject.org:6969/announ
 */
 type File struct {
 	// URL of a main tracker
-	Announce string "announce"
+	Announce string `bencode:"announce"`
 
 	// Epoch of the creation of this torrent
-	CreationDate int64 "creation date"
+	CreationDate int64 `bencode:"creation date"`
 
 	// Dictionary about this torrent, including files to be tracked
-	Info TorrentFileInfo "info"
+	Info TorrentFileInfo `bencode:"info"`
 }
 
 type TorrentFileInfo struct {
 	// suggested file/directory name where the file(s) are to be saved
-	Name string "name"
+	Name string `bencode:"name"`
 
 	// hash list of joined SHA1 sums (160-bit length)
-	Pieces string "pieces"
+	Pieces string `bencode:"pieces"`
 
 	// number of bytes per piece
-	PieceLength int64 "piece length"
+	PieceLength int64 `bencode:"piece length"`
 
 	// size of the file in bytes (only if this torrent is for a single file)
-	Length int64 "length"
+	Length int64 `bencode:"length"`
 
 	// list of information about the files
-	Files []FileInfo "files"
+	Files []FileInfo `bencode:"files"`
 }
 
 func (tfi TorrentFileInfo) PiecesList() []string {
@@ -46,21 +46,22 @@ func (tfi TorrentFileInfo) PiecesList() []string {
 
 type FileInfo struct {
 	// size of file in bytes
-	Length int64 "length"
+	Length int64 `bencode:"length"`
 
 	// list of strings corresponding to subdirectory names, the last of which is the actual file name
-	Path []string "path"
+	Path []string `bencode:"path"`
 }
 
 type torrentError struct {
-  Msg string
+	Msg string
 }
+
 func (te torrentError) Error() string {
-  return te.Msg
+	return te.Msg
 }
 
 var (
-  ErrNotProperDataInterface = torrentError{"data does not look like map[string]interface{}"}
+	ErrNotProperDataInterface = torrentError{"data does not look like map[string]interface{}"}
 )
 
 func DecocdeTorrentData(data interface{}) (*File, error) {

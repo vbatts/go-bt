@@ -534,7 +534,7 @@ func isValueNil(val reflect.Value) bool {
 // an infinite recursion.
 //
 func Marshal(w io.Writer, val interface{}) error {
-  // TODO match other encoders, like encoding/json ...
-  // func Marshal(v interface{}) ([]byte, error)
+	// TODO match other encoders, like encoding/json ...
+	// func Marshal(v interface{}) ([]byte, error)
 	return writeValue(w, reflect.ValueOf(val))
 }
