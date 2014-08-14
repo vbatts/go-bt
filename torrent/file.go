@@ -14,16 +14,16 @@ type File struct {
 	AnnounceList []string `bencode:"announce-list"`
 
 	// Epoch of the creation of this torrent
-	CreationDate int64 `bencode:"creation date,omitempty"`
+	CreationDate int64 `bencode:"creation date"`
 
 	// Dictionary about this torrent, including files to be tracked
-	Info InfoSection `bencode:"info,omitempty"`
+	Info InfoSection `bencode:"info"`
 
 	// free-form textual comments of the author
-	Comment string `bencode:"comment,omitempty"`
+	Comment string `bencode:"comment"`
 
 	// name and version of the program used to create the .torrent
-	CreatedBy string `bencode:"created by,omitempty"`
+	CreatedBy string `bencode:"created by"`
 
 	// string encoding used to generate the `pieces` and `info` fields
 	Encoding string `bencode:"encoding"`
@@ -35,7 +35,7 @@ func (f File) CreationDateTime() time.Time {
 
 type InfoSection struct {
 	// suggested file/directory name where the file(s) are to be saved
-	Name string `bencode:"name,omitempty"`
+	Name string `bencode:"name"`
 
 	// hash list of joined SHA1 sums (160-bit length)
 	Pieces string `bencode:"pieces"`
@@ -44,10 +44,10 @@ type InfoSection struct {
 	PieceLength int64 `bencode:"piece length"`
 
 	// size of the file in bytes (only if this torrent is for a single file)
-	Length int64 `bencode:"length,omitempty"`
+	Length int64 `bencode:"length"`
 
 	// 32-char hexadecimal string corresponding to the MD5 sum of the file (only if this torrent is for a single file)
-	MD5 string `bencode:"md5sum,omitempty"`
+	MD5 string `bencode:"md5sum"`
 
 	// list of information about the files
 	Files []FileInfo `bencode:"files"`
@@ -69,7 +69,7 @@ type FileInfo struct {
 	Path []string `bencode:"path"`
 
 	// 32-char hexadecimal string corresponding to the MD5 sum of the file (only if this torrent is for a single file)
-	MD5 string `bencode:"md5sum,omitempty"`
+	MD5 string `bencode:"md5sum"`
 }
 
 type torrentError struct {
