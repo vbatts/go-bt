@@ -28,14 +28,14 @@ func main() {
 			continue
 		}
 
-    buf, err := ioutil.ReadAll(fh)
+		buf, err := ioutil.ReadAll(fh)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "%s\n", err)
 			continue
 		}
 		fh.Close()
 
-    tf := torrent.File{}
+		tf := torrent.File{}
 		err = bencode.Unmarshal(buf, &tf)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "%s\n", err)
@@ -54,7 +54,7 @@ func main() {
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "%s\n", err)
 			}
-      _, err = fhOutput.Write(buf)
+			_, err = fhOutput.Write(buf)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "%s\n", err)
 			}
