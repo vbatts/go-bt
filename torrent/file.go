@@ -2,6 +2,7 @@ package torrent
 
 import (
 	"crypto/sha1"
+	"time"
 )
 
 // https://wiki.theory.org/BitTorrentSpecification#Metainfo_File_Structure
@@ -26,6 +27,10 @@ type File struct {
 
 	// string encoding used to generate the `pieces` and `info` fields
 	Encoding string `bencode:"encoding"`
+}
+
+func (f File) CreationDateTime() time.Time {
+	return time.Unix(f.CreationDate, 0)
 }
 
 type InfoSection struct {

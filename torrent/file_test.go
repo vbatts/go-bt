@@ -32,3 +32,10 @@ func TestFileMarshal(t *testing.T) {
 		t.Errorf("expected %q, got %q", len(f1.AnnounceList), len(f2.AnnounceList))
 	}
 }
+
+func TestTime(t *testing.T) {
+	f1 := File{}
+	if f1.CreationDateTime().Unix() != 0 {
+		t.Errorf("%s -- %d", f1.CreationDateTime(), f1.CreationDateTime().Unix())
+	}
+}
