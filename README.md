@@ -2,12 +2,15 @@
 
 bittorrent related things
 
-## ./bencode/
+## ./bencode
 
-fork from code.google.com/p/bencode-go
-with a few changes
+fork from code.google.com/p/bencode-go with updates.
 
-## ./torrent/
+See http://godoc.org/github.com/vbatts/go-bt/bencode for docs
 
-Decoder and struct for the torrent file format
+## ./torrent
+
+Decoder and struct for the torrent file format.
+
+See http://godoc.org/github.com/vbatts/go-bt/torrent for docs
 

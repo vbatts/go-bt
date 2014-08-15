@@ -556,7 +556,7 @@ func isValueNil(val reflect.Value) bool {
 	return false
 }
 
-// Marshal writes the bencode encoding of val to w.
+// Marshal returns the bencode encoding of val.
 //
 // Marshal traverses the value v recursively.
 //
@@ -581,6 +581,12 @@ func isValueNil(val reflect.Value) bool {
 //   Field int `bencode:"myName"`
 //
 // Anonymous struct fields are ignored.
+//
+//   // Field is not marshalled
+//   Field int `bencode:"-"`
+//
+//   // Field is not marshalled, if it is empty, otherwise as key "myName"
+//   Field int `bencode:"myName,omitempty"`
 //
 // Map values encode as bencode objects.
 // The map's key type must be string; the object keys are used directly

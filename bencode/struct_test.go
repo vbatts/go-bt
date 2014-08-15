@@ -9,6 +9,7 @@ type testStruct struct {
 	Field1 string `bencode:"my field1"`
 	Field2 int64  `bencode:"my field2"`
 	Field3 int64  `bencode:"my field3,omitempty"`
+	Field4 int64  `bencode:"-"`
 }
 
 type testOldTag struct {
@@ -25,6 +26,9 @@ func TestMarshalling(t *testing.T) {
 
 	if bytes.Contains(buf, []byte("omitempty")) || bytes.Contains(buf, []byte("field3")) {
 		t.Errorf("should not have the string 'omitempty' or 'field3' in %q", buf)
+	}
+	if bytes.Contains(buf, []byte("Field4")) {
+		t.Errorf("should not have the string 'Field4' in %q", buf)
 	}
 
 	ts2 := testStruct{}
