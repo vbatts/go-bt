@@ -1,6 +1,7 @@
 package torrent
 
 import (
+	"bytes"
 	"github.com/vbatts/go-bt/bencode"
 	"testing"
 )
@@ -17,6 +18,10 @@ func TestFileMarshal(t *testing.T) {
 	buf, err := bencode.Marshal(f1)
 	if err != nil {
 		t.Fatal(err)
+	}
+
+	if bytes.Contains(buf, []byte("omitempty")) || bytes.Contains(buf, []byte("created by")) {
+		t.Errorf("should not have the string 'omitempty' or 'created by' in %q", buf)
 	}
 
 	f2 := File{}

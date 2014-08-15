@@ -1,12 +1,14 @@
 package bencode
 
 import (
+	"bytes"
 	"testing"
 )
 
 type testStruct struct {
 	Field1 string `bencode:"my field1"`
 	Field2 int64  `bencode:"my field2"`
+	Field3 int64  `bencode:"my field3,omitempty"`
 }
 
 type testOldTag struct {
@@ -15,10 +17,14 @@ type testOldTag struct {
 }
 
 func TestMarshalling(t *testing.T) {
-	ts1 := testStruct{"foo", 123456}
+	ts1 := testStruct{Field1: "foo", Field2: 123456}
 	buf, err := Marshal(ts1)
 	if err != nil {
 		t.Fatal(err)
+	}
+
+	if bytes.Contains(buf, []byte("omitempty")) || bytes.Contains(buf, []byte("field3")) {
+		t.Errorf("should not have the string 'omitempty' or 'field3' in %q", buf)
 	}
 
 	ts2 := testStruct{}
