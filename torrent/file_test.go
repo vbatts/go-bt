@@ -2,9 +2,33 @@ package torrent
 
 import (
 	"bytes"
-	"github.com/vbatts/go-bt/bencode"
+	"fmt"
+	"io/ioutil"
 	"testing"
+
+	"github.com/vbatts/go-bt/bencode"
 )
+
+func TestDecode(t *testing.T) {
+	data := new(map[string]interface{})
+	tData, err := ioutil.ReadFile("./testdata/farts.torrent")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// currently failing in ./bencode/struct.go:134
+	if err := bencode.Unmarshal(tData, &data); err != nil {
+		t.Error(err)
+	}
+
+	f, err := DecocdeTorrentData(data)
+	if err != nil {
+		t.Error(err)
+	}
+
+	fmt.Printf("%#v\n", f)
+
+}
 
 func TestFileMarshal(t *testing.T) {
 	f1 := File{

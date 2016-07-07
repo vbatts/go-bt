@@ -5,30 +5,31 @@ import (
 	"time"
 )
 
-// https://wiki.theory.org/BitTorrentSpecification#Metainfo_File_Structure
+// File is a representation of https://wiki.theory.org/BitTorrentSpecification#Metainfo_File_Structure
 type File struct {
-	// URL of a main tracker
+	// Announce is the URL of a main tracker
 	Announce string `bencode:"announce"`
 
-	// List of additional trackers
+	// AnnounceList lists additional trackers
 	AnnounceList []string `bencode:"announce-list"`
 
-	// Epoch of the creation of this torrent
+	// CreationDate is epoch of the creation of this torrent
 	CreationDate int64 `bencode:"creation date,omitempty"`
 
-	// Dictionary about this torrent, including files to be tracked
+	// Info is the dictionary about this torrent, including files to be tracked
 	Info InfoSection `bencode:"info,omitempty"`
 
-	// free-form textual comments of the author
+	// Comment is free-form textual comments of the author
 	Comment string `bencode:"comment,omitempty"`
 
-	// name and version of the program used to create the .torrent
+	// CreatedBy is the name and version of the program used to create the .torrent
 	CreatedBy string `bencode:"created by,omitempty"`
 
-	// string encoding used to generate the `pieces` and `info` fields
+	// Encoding string encoding used to generate the `pieces` and `info` fields
 	Encoding string `bencode:"encoding"`
 }
 
+// CreationDateTime returns a time from the File's CreationDate
 func (f File) CreationDateTime() time.Time {
 	return time.Unix(f.CreationDate, 0)
 }
@@ -84,6 +85,8 @@ var (
 	ErrNotProperDataInterface = torrentError{"data does not look like map[string]interface{}"}
 )
 
+// DecocdeTorrentData translates a bencode decoded message from a *.torrent file.
+// Assuming a generic map[string]interface{} data.
 func DecocdeTorrentData(data interface{}) (*File, error) {
 	m, ok := data.(map[string]interface{})
 	if !ok {
